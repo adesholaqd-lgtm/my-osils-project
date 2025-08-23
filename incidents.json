@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "date_reported": "2025-08-23",
+    "time_reported": "09:11",
+    "location": "NNPC JETTY, APAPA, LAGOS",
+    "state": "Lagos",
+    "lga": "Apapa LG",
+    "coordinates": {
+      "latitude": "",
+      "longitude": ""
+    },
+    "incident_type": "Pipeline Leak",
+    "source": "Land",
+    "cause": "Human Error",
+    "oil_type": "Refined Petroleum",
+    "estimated_volume": "2.01",
+    "severity": "Low",
+    "weather_conditions": "Sunny",
+    "water_body_affected": "River",
+    "land_area_affected": "",
+    "population_affected": "",
+    "environmental_impact": "Spill",
+    "response_actions": "remediation",
+    "response_team": "OFA dept",
+    "cleanup_status": "In Progress",
+    "reported_by": "MR. Fatai Ologunro",
+    "contact_info": "080223521455",
+    "company_responsible": "",
+    "additional_notes": "",
+    "timestamp": "2025-08-23 15:22:12"
+  }
+]
