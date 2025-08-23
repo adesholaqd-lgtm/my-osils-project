@@ -1,0 +1,212 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1><i class="fas fa-chart-bar text-primary"></i> Reports & Analytics</h1>
+        <p class="text-muted">Comprehensive overview of oil spill incidents</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <h3>{{ stats.total_incidents }}</h3>
+                <p>Total Incidents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-fire fa-2x mb-2"></i>
+                <h3>{{ stats.severity_stats.get('High', 0) }}</h3>
+                <p>High Severity</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation fa-2x mb-2"></i>
+                <h3>{{ stats.severity_stats.get('Medium', 0) }}</h3>
+                <p>Medium Severity</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h3>{{ stats.severity_stats.get('Low', 0) }}</h3>
+                <p>Low Severity</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-pie"></i> Incidents by Severity</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="severityChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Incidents by State</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="stateChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line"></i> Monthly Incident Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-table"></i> All Incidents</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>State</th>
+                                <th>Type</th>
+                                <th>Volume (barrels)</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for incident in incidents %}
+                            <tr>
+                                <td><strong>#{{ incident.id }}</strong></td>
+                                <td>{{ incident.date_reported }}</td>
+                                <td>{{ incident.location[:50] }}{% if incident.location|length > 50 %}...{% endif %}</td>
+                                <td>{{ incident.state }}</td>
+                                <td><span class="badge bg-info">{{ incident.incident_type }}</span></td>
+                                <td>{{ incident.estimated_volume }}</td>
+                                <td>
+                                    <span class="badge bg-{% if incident.severity == 'High' %}danger{% elif incident.severity == 'Medium' %}warning{% else %}success{% endif %}">
+                                        {{ incident.severity }}
+                                    </span>
+                                </td>
+                                <td><span class="badge bg-secondary">{{ incident.cleanup_status }}</span></td>
+                                <td>
+                                    <a href="{{ url_for('view_incident', incident_id=incident.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Severity Chart
+const severityCtx = document.getElementById('severityChart').getContext('2d');
+new Chart(severityCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ stats.severity_stats.keys() | list | tojson }},
+        datasets: [{
+            data: {{ stats.severity_stats.values() | list | tojson }},
+            backgroundColor: ['#dc3545', '#ffc107', '#28a745']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        height: 300
+    }
+});
+
+// State Chart
+const stateCtx = document.getElementById('stateChart').getContext('2d');
+new Chart(stateCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ stats.state_stats.keys() | list | tojson }},
+        datasets: [{
+            label: 'Incidents',
+            data: {{ stats.state_stats.values() | list | tojson }},
+            backgroundColor: '#007bff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Monthly Chart
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: {{ stats.monthly_stats.keys() | list | tojson }},
+        datasets: [{
+            label: 'Monthly Incidents',
+            data: {{ stats.monthly_stats.values() | list | tojson }},
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,307 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Report Oil Spill Incident</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('submit_incident') }}">
+                    <div class="row">
+                        <!-- Basic Information -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-info-circle"></i> Basic Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Date Reported *</label>
+                                <input type="date" name="date_reported" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Time Reported *</label>
+                                <input type="time" name="time_reported" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Location Information -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-map-marker-alt"></i> Location Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Location/Address *</label>
+                                <textarea name="location" class="form-control" rows="2" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">State *</label>
+                                <select name="state" class="form-control" required>
+                                    <option value="">Select State</option>
+                                    <option value="Abia">Abia</option>
+                                    <option value="Adamawa">Adamawa</option>
+                                    <option value="Akwa Ibom">Akwa Ibom</option>
+                                    <option value="Anambra">Anambra</option>
+                                    <option value="Bauchi">Bauchi</option>
+                                    <option value="Bayelsa">Bayelsa</option>
+                                    <option value="Benue">Benue</option>
+                                    <option value="Borno">Borno</option>
+                                    <option value="Cross River">Cross River</option>
+                                    <option value="Delta">Delta</option>
+                                    <option value="Ebonyi">Ebonyi</option>
+                                    <option value="Edo">Edo</option>
+                                    <option value="Ekiti">Ekiti</option>
+                                    <option value="Enugu">Enugu</option>
+                                    <option value="FCT">FCT</option>
+                                    <option value="Gombe">Gombe</option>
+                                    <option value="Imo">Imo</option>
+                                    <option value="Jigawa">Jigawa</option>
+                                    <option value="Kaduna">Kaduna</option>
+                                    <option value="Kano">Kano</option>
+                                    <option value="Katsina">Katsina</option>
+                                    <option value="Kebbi">Kebbi</option>
+                                    <option value="Kogi">Kogi</option>
+                                    <option value="Kwara">Kwara</option>
+                                    <option value="Lagos">Lagos</option>
+                                    <option value="Nasarawa">Nasarawa</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Ogun">Ogun</option>
+                                    <option value="Ondo">Ondo</option>
+                                    <option value="Osun">Osun</option>
+                                    <option value="Oyo">Oyo</option>
+                                    <option value="Plateau">Plateau</option>
+                                    <option value="Rivers">Rivers</option>
+                                    <option value="Sokoto">Sokoto</option>
+                                    <option value="Taraba">Taraba</option>
+                                    <option value="Yobe">Yobe</option>
+                                    <option value="Zamfara">Zamfara</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Local Government Area</label>
+                                <input type="text" name="lga" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Latitude</label>
+                                <input type="text" name="latitude" class="form-control" placeholder="e.g., 6.5244">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Longitude</label>
+                                <input type="text" name="longitude" class="form-control" placeholder="e.g., 3.3792">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Incident Details -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-exclamation-triangle"></i> Incident Details</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Incident Type *</label>
+                                <select name="incident_type" class="form-control" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Pipeline Leak">Pipeline Leak</option>
+                                    <option value="Well Blowout">Well Blowout</option>
+                                    <option value="Tank/Storage Leak">Tank/Storage Leak</option>
+                                    <option value="Vehicle/Ship Spill">Vehicle/Ship Spill</option>
+                                    <option value="Vandalism">Vandalism</option>
+                                    <option value="Equipment Failure">Equipment Failure</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Source *</label>
+                                <select name="source" class="form-control" required>
+                                    <option value="">Select Source</option>
+                                    <option value="Onshore">Onshore</option>
+                                    <option value="Offshore">Offshore</option>
+                                    <option value="Swamp">Swamp</option>
+                                    <option value="River">River</option>
+                                    <option value="Land">Land</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Cause *</label>
+                                <select name="cause" class="form-control" required>
+                                    <option value="">Select Cause</option>
+                                    <option value="Equipment Failure">Equipment Failure</option>
+                                    <option value="Human Error">Human Error</option>
+                                    <option value="Sabotage/Vandalism">Sabotage/Vandalism</option>
+                                    <option value="Corrosion">Corrosion</option>
+                                    <option value="Natural Disaster">Natural Disaster</option>
+                                    <option value="Unknown">Unknown</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Oil Type *</label>
+                                <select name="oil_type" class="form-control" required>
+                                    <option value="">Select Oil Type</option>
+                                    <option value="Crude Oil">Crude Oil</option>
+                                    <option value="Refined Petroleum">Refined Petroleum</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Gasoline">Gasoline</option>
+                                    <option value="Kerosene">Kerosene</option>
+                                    <option value="Heavy Fuel Oil">Heavy Fuel Oil</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Estimated Volume (barrels) *</label>
+                                <input type="number" name="estimated_volume" class="form-control" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Severity Level *</label>
+                                <select name="severity" class="form-control" required>
+                                    <option value="">Select Severity</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Environmental Impact -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-leaf"></i> Environmental Impact</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Weather Conditions *</label>
+                                <input type="text" name="weather_conditions" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Water Body Affected</label>
+                                <input type="text" name="water_body_affected" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Land Area Affected (hectares)</label>
+                                <input type="number" name="land_area_affected" class="form-control" min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Population Affected</label>
+                                <input type="number" name="population_affected" class="form-control" min="0">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Environmental Impact Description *</label>
+                                <textarea name="environmental_impact" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Response Information -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-hands-helping"></i> Response Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Response Actions Taken *</label>
+                                <textarea name="response_actions" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Response Team *</label>
+                                <input type="text" name="response_team" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Cleanup Status *</label>
+                                <select name="cleanup_status" class="form-control" required>
+                                    <option value="">Select Status</option>
+                                    <option value="Not Started">Not Started</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Suspended">Suspended</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Reporter Information -->
+                        <div class="col-12">
+                            <h5 class="text-primary mb-3"><i class="fas fa-user"></i> Reporter Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Reported By *</label>
+                                <input type="text" name="reported_by" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Contact Information *</label>
+                                <input type="text" name="contact_info" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Company Responsible (if known)</label>
+                                <input type="text" name="company_responsible" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Additional Notes</label>
+                                <textarea name="additional_notes" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-save"></i> Submit Incident Report
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-tachometer-alt text-primary"></i> Dashboard</h1>
+            <a href="{{ url_for('add_incident') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus-circle"></i> Report New Incident
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <h3>{{ incidents|length }}</h3>
+                <p>Total Incidents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-fire fa-2x mb-2"></i>
+                <h3>{{ incidents|selectattr("severity", "equalto", "High")|list|length }}</h3>
+                <p>High Severity</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation fa-2x mb-2"></i>
+                <h3>{{ incidents|selectattr("severity", "equalto", "Medium")|list|length }}</h3>
+                <p>Medium Severity</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h3>{{ incidents|selectattr("severity", "equalto", "Low")|list|length }}</h3>
+                <p>Low Severity</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-list"></i> Recent Incidents</h4>
+            </div>
+            <div class="card-body">
+                {% if incidents %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>State</th>
+                                <th>Type</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for incident in incidents[-10:] %}
+                            <tr class="severity-{{ incident.severity.lower() }}">
+                                <td><strong>#{{ incident.id }}</strong></td>
+                                <td>{{ incident.date_reported }}</td>
+                                <td>{{ incident.location }}</td>
+                                <td>{{ incident.state }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ incident.incident_type }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if incident.severity == 'High' %}danger{% elif incident.severity == 'Medium' %}warning{% else %}success{% endif %}">
+                                        {{ incident.severity }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ incident.cleanup_status }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_incident', incident_id=incident.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h4>No incidents reported yet</h4>
+                    <p class="text-muted">Click the button above to report the first incident.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
