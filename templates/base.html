@@ -108,39 +108,161 @@
             background: rgba(255, 255, 255, 0.85);
             z-index: -1;
         }
+        
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .nosdra-header {
+                padding: 0.5rem 0;
+            }
+            
+            .nosdra-header .row {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nosdra-header .col-md-4 {
+                margin-top: 1rem;
+            }
+            
+            .nosdra-logo {
+                width: 50px;
+                height: 50px;
+                margin: 0 auto 10px auto;
+            }
+            
+            .nosdra-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .nosdra-header small {
+                font-size: 0.8rem;
+            }
+            
+            .navbar-nav {
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            main.container-fluid {
+                background-size: 200px;
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+            
+            .btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+            }
+            
+            .stats-card h3 {
+                font-size: 1.5rem;
+            }
+            
+            .footer {
+                padding: 1rem 0;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .nosdra-header h2 {
+                font-size: 1rem;
+            }
+            
+            .nosdra-header small {
+                font-size: 0.7rem;
+            }
+            
+            .nav-link {
+                font-size: 0.8rem;
+            }
+            
+            .nav-link i {
+                display: none;
+            }
+            
+            main.container-fluid {
+                background-size: 150px;
+                padding: 0.5rem;
+            }
+            
+            .card-header h3,
+            .card-header h4,
+            .card-header h5 {
+                font-size: 1rem;
+            }
+            
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Desktop enhancements */
+        @media (min-width: 1200px) {
+            main.container-fluid {
+                background-size: 400px;
+            }
+            
+            .nosdra-logo {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .nosdra-header h2 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <header class="nosdra-header">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="d-flex align-items-center">
+                <div class="col-md-8 col-12">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
                         <div class="nosdra-logo">
                             <img src="{{ url_for('static', filename='nosdra_logo.jpg') }}" alt="NOSDRA Logo">
                         </div>
-                        <div>
+                        <div class="text-center text-md-start">
                             <h2 class="mb-0">NOSDRA LZO ICT GIS Unit</h2>
                             <small>National Oil Spills Detection and Response Agency</small>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <nav class="navbar navbar-expand-lg">
-                        <ul class="navbar-nav ms-auto">
+                <div class="col-md-4 col-12">
+                    <nav class="navbar navbar-expand">
+                        <ul class="navbar-nav mx-auto mx-md-auto">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('index') }}">
-                                    <i class="fas fa-home"></i> Dashboard
+                                    <i class="fas fa-home"></i> <span class="d-none d-sm-inline">Dashboard</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('add_incident') }}">
-                                    <i class="fas fa-plus-circle"></i> Report Incident
+                                    <i class="fas fa-plus-circle"></i> <span class="d-none d-sm-inline">Report</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('reports') }}">
-                                    <i class="fas fa-chart-bar"></i> Reports
+                                    <i class="fas fa-chart-bar"></i> <span class="d-none d-sm-inline">Reports</span>
                                 </a>
                             </li>
                         </ul>
