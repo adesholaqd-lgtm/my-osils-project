@@ -90,6 +90,24 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+        main.container-fluid {
+            background-image: url("{{ url_for('static', filename='nosdra_logo.jpg') }}");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 300px;
+            background-attachment: fixed;
+            position: relative;
+        }
+        main.container-fluid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
