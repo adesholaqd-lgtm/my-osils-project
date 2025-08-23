@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .nosdra-header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -17,16 +17,18 @@
             overflow: hidden;
         }
         .nosdra-header::before {
-            content: '\f613';
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
+            content: '';
             position: absolute;
             top: 50%;
             right: 10%;
             transform: translateY(-50%);
-            font-size: 120px;
-            opacity: 0.1;
-            color: white;
+            width: 120px;
+            height: 120px;
+            background-image: url("{{ url_for('static', filename='nosdra_logo.jpg') }}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.15;
             z-index: 0;
         }
         .nosdra-header .container {
