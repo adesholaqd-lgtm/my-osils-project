@@ -13,6 +13,25 @@
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .nosdra-header::before {
+            content: '\f613';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            opacity: 0.1;
+            color: white;
+            z-index: 0;
+        }
+        .nosdra-header .container {
+            position: relative;
+            z-index: 1;
         }
         .nosdra-logo {
             width: 60px;
