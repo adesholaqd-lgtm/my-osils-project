@@ -69,11 +69,11 @@
         }
 
         .sidebar.mobile-hidden {
-            left: -var(--sidebar-width);
+            transform: translateX(-100%);
         }
 
         .sidebar.mobile-open {
-            left: 0;
+            transform: translateX(0);
         }
 
         .sidebar-overlay {
@@ -208,7 +208,7 @@
         /* Desktop sidebar */
         @media (min-width: 992px) {
             .sidebar {
-                left: 0;
+                transform: translateX(0);
             }
 
             .sidebar-overlay {
@@ -224,6 +224,14 @@
 
             .nosdra-header small {
                 font-size: 0.75rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
             }
         }
 
@@ -243,7 +251,7 @@
             .sidebar {
                 top: 60px;
                 height: calc(100vh - 60px);
-                left: -var(--sidebar-width);
+                transform: translateX(-100%);
             }
 
             .nosdra-logo {
@@ -444,9 +452,18 @@
                 sidebar.classList.toggle('minimized');
                 mainContent.classList.toggle('sidebar-minimized');
             } else {
-                // Mobile: show/hide
-                sidebar.classList.toggle('mobile-open');
-                overlay.classList.toggle('active');
+                // Mobile/Tablet: show/hide
+                const isOpen = sidebar.classList.contains('mobile-open');
+                
+                if (isOpen) {
+                    sidebar.classList.remove('mobile-open');
+                    sidebar.classList.add('mobile-hidden');
+                    overlay.classList.remove('active');
+                } else {
+                    sidebar.classList.remove('mobile-hidden');
+                    sidebar.classList.add('mobile-open');
+                    overlay.classList.add('active');
+                }
             }
         }
 
@@ -455,6 +472,7 @@
             const overlay = document.getElementById('sidebarOverlay');
 
             sidebar.classList.remove('mobile-open');
+            sidebar.classList.add('mobile-hidden');
             overlay.classList.remove('active');
         }
 
@@ -470,16 +488,22 @@
         window.addEventListener('resize', function() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.querySelector('.main-content');
+            const overlay = document.getElementById('sidebarOverlay');
             
             if (window.innerWidth >= 992) {
                 // Desktop mode
-                closeSidebar();
                 sidebar.classList.remove('mobile-hidden', 'mobile-open');
+                overlay.classList.remove('active');
+                if (!sidebar.classList.contains('minimized')) {
+                    mainContent.classList.remove('sidebar-minimized');
+                }
             } else {
-                // Mobile mode - reset to hidden
+                // Mobile/Tablet mode - reset to hidden
                 sidebar.classList.remove('minimized');
                 sidebar.classList.add('mobile-hidden');
+                sidebar.classList.remove('mobile-open');
                 mainContent.classList.remove('sidebar-minimized');
+                overlay.classList.remove('active');
             }
         });
 
@@ -517,12 +541,21 @@
         // Initialize sidebar state based on screen size
         function initializeSidebar() {
             const sidebar = document.getElementById('sidebar');
-            if (window.innerWidth < 992) {
+            const mainContent = document.querySelector('.main-content');
+            
+            if (window.innerWidth >= 992) {
+                // Desktop mode
+                sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            } else {
+                // Mobile/Tablet mode
                 sidebar.classList.add('mobile-hidden');
+                sidebar.classList.remove('mobile-open', 'minimized');
+                mainContent.classList.remove('sidebar-minimized');
             }
         }
 
         // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeSidebar);
         window.addEventListener('load', initializeSidebar);
     </script>
     {% block scripts %}{% endblock %}
