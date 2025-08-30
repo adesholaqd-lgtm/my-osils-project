@@ -310,7 +310,7 @@
                     </div>
                 </div>
                 <div class="d-none d-md-block">
-                    <span class="text-light"><i class="fas fa-clock"></i> {{ moment().format('MMMM Do YYYY, h:mm a') }}</span>
+                    <span class="text-light"><i class="fas fa-clock"></i> <span class="current-time"></span></span>
                 </div>
             </div>
         </div>
@@ -344,7 +344,7 @@
                 <div class="px-3 py-2">
                     <small class="text-light">
                         <i class="fas fa-calendar text-info"></i> 
-                        Last Updated: <span class="fw-bold">{{ moment().format('MMM DD') }}</span>
+                        Last Updated: <span class="fw-bold current-date"></span>
                     </small>
                 </div>
             </div>
@@ -445,11 +445,19 @@
         // Update time display
         function updateTime() {
             const timeElements = document.querySelectorAll('.current-time');
+            const dateElements = document.querySelectorAll('.current-date');
+            
             timeElements.forEach(el => {
                 el.textContent = moment().format('MMMM Do YYYY, h:mm a');
             });
+            
+            dateElements.forEach(el => {
+                el.textContent = moment().format('MMM DD');
+            });
         }
         
+        // Initial call and set interval
+        updateTime();
         setInterval(updateTime, 60000); // Update every minute
         
         // Close sidebar when clicking on main content on mobile
