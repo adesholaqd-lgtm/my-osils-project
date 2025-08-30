@@ -55,16 +55,24 @@
         .sidebar {
             position: fixed;
             top: 70px;
-            left: -var(--sidebar-width);
+            left: 0;
             width: var(--sidebar-width);
             height: calc(100vh - 70px);
             background: #2c3e50;
-            transition: left 0.3s ease;
+            transition: all 0.3s ease;
             z-index: 1020;
             overflow-y: auto;
         }
 
-        .sidebar.open {
+        .sidebar.minimized {
+            width: 60px;
+        }
+
+        .sidebar.mobile-hidden {
+            left: -var(--sidebar-width);
+        }
+
+        .sidebar.mobile-open {
             left: 0;
         }
 
@@ -116,10 +124,32 @@
             margin-right: 10px;
         }
 
+        .sidebar.minimized .menu-item span {
+            display: none;
+        }
+
+        .sidebar.minimized .menu-item {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .sidebar.minimized .menu-section {
+            display: none;
+        }
+
+        .sidebar.minimized hr {
+            display: none;
+        }
+
         .main-content {
             margin-top: 70px;
+            margin-left: var(--sidebar-width);
             padding: 20px;
             transition: margin-left 0.3s ease;
+        }
+
+        .main-content.sidebar-minimized {
+            margin-left: 60px;
         }
 
         .menu-toggle {
@@ -181,14 +211,6 @@
                 left: 0;
             }
 
-            .main-content {
-                margin-left: var(--sidebar-width);
-            }
-
-            .menu-toggle {
-                display: none;
-            }
-
             .sidebar-overlay {
                 display: none;
             }
@@ -214,12 +236,14 @@
 
             .main-content {
                 margin-top: 60px;
+                margin-left: 0 !important;
                 padding: 15px;
             }
 
             .sidebar {
                 top: 60px;
                 height: calc(100vh - 60px);
+                left: -var(--sidebar-width);
             }
 
             .nosdra-logo {
@@ -413,16 +437,24 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.querySelector('.main-content');
 
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
+            if (window.innerWidth >= 992) {
+                // Desktop: minimize/maximize
+                sidebar.classList.toggle('minimized');
+                mainContent.classList.toggle('sidebar-minimized');
+            } else {
+                // Mobile: show/hide
+                sidebar.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+            }
         }
 
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
 
-            sidebar.classList.remove('open');
+            sidebar.classList.remove('mobile-open');
             overlay.classList.remove('active');
         }
 
@@ -434,10 +466,20 @@
             alert('Contact NOSDRA:\nPhone: +234-1-XXXXXXX\nEmail: info@nosdra.gov.ng\nWebsite: www.nosdra.gov.ng');
         }
 
-        // Auto-close sidebar on large screens
+        // Handle screen resize
         window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
             if (window.innerWidth >= 992) {
+                // Desktop mode
                 closeSidebar();
+                sidebar.classList.remove('mobile-hidden', 'mobile-open');
+            } else {
+                // Mobile mode - reset to hidden
+                sidebar.classList.remove('minimized');
+                sidebar.classList.add('mobile-hidden');
+                mainContent.classList.remove('sidebar-minimized');
             }
         });
 
@@ -467,10 +509,21 @@
             if (window.innerWidth < 992 && 
                 !sidebar.contains(e.target) && 
                 !menuToggle.contains(e.target) && 
-                sidebar.classList.contains('open')) {
+                sidebar.classList.contains('mobile-open')) {
                 closeSidebar();
             }
         });
+
+        // Initialize sidebar state based on screen size
+        function initializeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 992) {
+                sidebar.classList.add('mobile-hidden');
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initializeSidebar);
     </script>
     {% block scripts %}{% endblock %}
 </body>
