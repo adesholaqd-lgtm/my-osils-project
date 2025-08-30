@@ -29,5 +29,36 @@
     "company_responsible": "",
     "additional_notes": "",
     "timestamp": "2025-08-23 15:22:12"
+  },
+  {
+    "id": 2,
+    "date_reported": "2025-08-26",
+    "time_reported": "09:16",
+    "location": "Warri ",
+    "state": "Delta",
+    "lga": "Warri",
+    "coordinates": {
+      "latitude": "",
+      "longitude": ""
+    },
+    "incident_type": "Vehicle/Ship Spill",
+    "source": "Land",
+    "cause": "Sabotage/Vandalism",
+    "oil_type": "Diesel",
+    "estimated_volume": "45000",
+    "severity": "Medium",
+    "weather_conditions": "Low",
+    "water_body_affected": "",
+    "land_area_affected": "",
+    "population_affected": "",
+    "environmental_impact": "Qudus fimile",
+    "response_actions": "Qudus Kigali ",
+    "response_team": "Kudus ",
+    "cleanup_status": "In Progress",
+    "reported_by": "Powerful Tejiri",
+    "contact_info": "Lagos",
+    "company_responsible": "",
+    "additional_notes": "",
+    "timestamp": "2025-08-26 20:20:39"
   }
 ]
