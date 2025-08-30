@@ -1,190 +1,248 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 <style>
-    .dashboard-container {
-        background-image: url("{{ url_for('static', filename='nosdra_logo.jpg') }}");
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: 300px;
-        background-attachment: fixed;
+    .dashboard-welcome {
+        background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1));
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
         position: relative;
-        min-height: 80vh;
+        overflow: hidden;
     }
-    .dashboard-container::before {
+    
+    .dashboard-welcome::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.85);
-        z-index: -1;
+        top: 50%;
+        right: 10%;
+        transform: translateY(-50%);
+        width: 100px;
+        height: 100px;
+        background-image: url("{{ url_for('static', filename='nosdra_logo.jpg') }}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.1;
+        z-index: 0;
     }
-    .dashboard-content {
+    
+    .dashboard-welcome > * {
         position: relative;
         z-index: 1;
     }
     
-    @media (max-width: 768px) {
-        .dashboard-container {
-            background-size: 200px;
+    .quick-actions {
+        margin-bottom: 2rem;
+    }
+    
+    .action-btn {
+        border-radius: 10px;
+        padding: 1rem;
+        text-decoration: none;
+        color: white;
+        display: block;
+        transition: all 0.3s ease;
+        margin-bottom: 0.5rem;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .action-btn-report {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+    
+    .action-btn-view {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+    
+    .action-btn-analytics {
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 767px) {
+        .dashboard-welcome {
+            padding: 1.5rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dashboard-welcome h1 {
+            font-size: 1.3rem;
+        }
+        
+        .dashboard-welcome::before {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .stats-row .col-6 {
+            margin-bottom: 1rem;
+        }
+        
+        .action-btn {
+            padding: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .recent-incidents-table {
+            font-size: 0.75rem;
+        }
+        
+        .recent-incidents-table td,
+        .recent-incidents-table th {
+            padding: 0.4rem 0.2rem;
+        }
+        
+        .badge {
+            font-size: 0.65rem;
         }
     }
     
     @media (max-width: 576px) {
-        .dashboard-container {
-            background-size: 150px;
+        .dashboard-welcome h1 {
+            font-size: 1.1rem;
         }
-    }
-    
-    @media (min-width: 1200px) {
-        .dashboard-container {
-            background-size: 400px;
+        
+        .stats-card h3 {
+            font-size: 1.1rem;
+        }
+        
+        .stats-card p {
+            font-size: 0.75rem;
         }
     }
 </style>
 
-<div class="dashboard-container">
-    <div class="dashboard-content">
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1><i class="fas fa-tachometer-alt text-primary"></i> Dashboard</h1>
-            <a href="{{ url_for('add_incident') }}" class="btn btn-primary btn-lg">
-                <i class="fas fa-plus-circle"></i> Report New Incident
+<!-- Welcome Section -->
+<div class="dashboard-welcome">
+    <h1><i class="fas fa-shield-alt text-primary"></i> Welcome to NOSDRA Dashboard</h1>
+    <p class="lead mb-0">Oil Spill Incident Monitoring & Response System</p>
+    <small class="text-muted">Real-time tracking and management of environmental incidents</small>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <div class="row g-3">
+        <div class="col-lg-4 col-md-12">
+            <a href="{{ url_for('add_incident') }}" class="action-btn action-btn-report">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Report New Incident</h5>
+                        <small>Submit an oil spill incident report</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <a href="#recent-incidents" class="action-btn action-btn-view">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-list fa-2x me-3"></i>
+                    <div>
+                        <h5 class="mb-1">View Incidents</h5>
+                        <small>Browse all reported incidents</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <a href="{{ url_for('reports') }}" class="action-btn action-btn-analytics">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-chart-line fa-2x me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Analytics</h5>
+                        <small>View reports and statistics</small>
+                    </div>
+                </div>
             </a>
         </div>
     </div>
 </div>
 
 <!-- Statistics Cards -->
-<div class="row mb-4">
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
+<div class="row stats-row mb-4">
+    <div class="col-lg-3 col-md-6 col-6">
         <div class="card stats-card text-white">
             <div class="card-body text-center">
                 <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                 <h3>{{ incidents|length }}</h3>
-                <p>Total Incidents</p>
+                <p class="mb-0">Total Incidents</p>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
+    <div class="col-lg-3 col-md-6 col-6">
         <div class="card bg-danger text-white">
             <div class="card-body text-center">
                 <i class="fas fa-fire fa-2x mb-2"></i>
                 <h3>{{ incidents|selectattr("severity", "equalto", "High")|list|length }}</h3>
-                <p>High Severity</p>
+                <p class="mb-0">High Severity</p>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
+    <div class="col-lg-3 col-md-6 col-6">
         <div class="card bg-warning text-white">
             <div class="card-body text-center">
                 <i class="fas fa-exclamation fa-2x mb-2"></i>
                 <h3>{{ incidents|selectattr("severity", "equalto", "Medium")|list|length }}</h3>
-                <p>Medium Severity</p>
+                <p class="mb-0">Medium Severity</p>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 col-sm-6 mb-3">
+    <div class="col-lg-3 col-md-6 col-6">
         <div class="card bg-success text-white">
             <div class="card-body text-center">
                 <i class="fas fa-check-circle fa-2x mb-2"></i>
                 <h3>{{ incidents|selectattr("severity", "equalto", "Low")|list|length }}</h3>
-                <p>Low Severity</p>
+                <p class="mb-0">Low Severity</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Oil Spill Cleanup Gallery -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="fas fa-broom"></i> Oil Spill Response & Cleanup Operations</h4>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="card border-0 shadow-sm">
-                            <img src="https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=400&h=250&fit=crop" 
-                                 class="card-img-top" alt="Cleanup crew working on oil spill" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-2">
-                                <small class="text-muted">Response Team Deployment</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-0 shadow-sm">
-                            <img src="https://images.unsplash.com/photo-1569163139394-de4e3f43e4e3?w=400&h=250&fit=crop" 
-                                 class="card-img-top" alt="Oil spill cleanup equipment" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-2">
-                                <small class="text-muted">Cleanup Equipment</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-0 shadow-sm">
-                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=250&fit=crop" 
-                                 class="card-img-top" alt="Environmental protection workers" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-2">
-                                <small class="text-muted">Environmental Protection</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-0 shadow-sm">
-                            <img src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=250&fit=crop" 
-                                 class="card-img-top" alt="Water cleanup operations" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-2">
-                                <small class="text-muted">Water Body Restoration</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-3">
-                    <p class="text-muted mb-0">
-                        <i class="fas fa-info-circle"></i> 
-                        NOSDRA's dedicated response teams work around the clock to protect Nigeria's environment
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Recent Incidents -->
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="card" id="recent-incidents">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="fas fa-list"></i> Recent Incidents</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-list"></i> Recent Incidents</h4>
+                    <span class="badge bg-light text-dark">{{ incidents|length }} Total</span>
+                </div>
             </div>
             <div class="card-body">
                 {% if incidents %}
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover recent-incidents-table">
                         <thead class="table-dark">
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
-                                <th>Location</th>
+                                <th class="d-none d-md-table-cell">Location</th>
                                 <th>State</th>
-                                <th>Type</th>
+                                <th class="d-none d-lg-table-cell">Type</th>
                                 <th>Severity</th>
-                                <th>Status</th>
+                                <th class="d-none d-md-table-cell">Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for incident in incidents[-10:] %}
                             <tr class="severity-{{ incident.severity.lower() }}">
-                                <td><strong>#{{ incident.id }}</strong></td>
-                                <td>{{ incident.date_reported }}</td>
-                                <td>{{ incident.location }}</td>
-                                <td>{{ incident.state }}</td>
+                                <td><strong class="text-primary">#{{ incident.id }}</strong></td>
                                 <td>
+                                    <small>{{ incident.date_reported }}</small>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <small>{{ incident.location[:30] }}{% if incident.location|length > 30 %}...{% endif %}</small>
+                                </td>
+                                <td>{{ incident.state }}</td>
+                                <td class="d-none d-lg-table-cell">
                                     <span class="badge bg-info">{{ incident.incident_type }}</span>
                                 </td>
                                 <td>
@@ -192,13 +250,13 @@
                                         {{ incident.severity }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="badge bg-secondary">{{ incident.cleanup_status }}</span>
                                 </td>
                                 <td>
                                     <a href="{{ url_for('view_incident', incident_id=incident.id) }}" 
                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-eye"></i> View
+                                        <i class="fas fa-eye"></i> <span class="d-none d-sm-inline">View</span>
                                     </a>
                                 </td>
                             </tr>
@@ -206,16 +264,27 @@
                         </tbody>
                     </table>
                 </div>
+                
+                {% if incidents|length > 10 %}
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('reports') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-list"></i> View All Incidents
+                    </a>
+                </div>
+                {% endif %}
+                
                 {% else %}
                 <div class="text-center py-5">
-                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
                     <h4>No incidents reported yet</h4>
-                    <p class="text-muted">Click the button above to report the first incident.</p>
+                    <p class="text-muted">Get started by reporting the first incident to the system.</p>
+                    <a href="{{ url_for('add_incident') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i> Report First Incident
+                    </a>
                 </div>
                 {% endif %}
             </div>
         </div>
-    </div>
     </div>
 </div>
 {% endblock %}

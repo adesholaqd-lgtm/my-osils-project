@@ -10,6 +10,13 @@ app.secret_key = 'nosdra_secret_key_2024'
 # Data storage (using JSON file for simplicity - no database needed)
 DATA_FILE = 'incidents.json'
 
+@app.context_processor
+def inject_global_data():
+    return dict(
+        load_incidents=load_incidents,
+        moment=datetime
+    )
+
 def load_incidents():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, 'r') as f:

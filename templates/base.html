@@ -8,36 +8,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #27ae60;
+            --secondary-color: #2ecc71;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         .nosdra-header {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            height: 70px;
         }
-        .nosdra-header::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 10%;
-            transform: translateY(-50%);
-            width: 120px;
-            height: 120px;
-            background-image: url("{{ url_for('static', filename='nosdra_logo.jpg') }}");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.15;
-            z-index: 0;
-        }
-        .nosdra-header .container {
-            position: relative;
-            z-index: 1;
-        }
+        
         .nosdra-logo {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -45,213 +43,348 @@
             justify-content: center;
             margin-right: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            border: 3px solid #ffffff;
+            border: 2px solid #ffffff;
             overflow: hidden;
         }
+        
         .nosdra-logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .nav-link {
-            color: white !important;
-            transition: color 0.3s ease;
+        
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: -var(--sidebar-width);
+            width: var(--sidebar-width);
+            height: calc(100vh - 70px);
+            background: #2c3e50;
+            transition: left 0.3s ease;
+            z-index: 1020;
+            overflow-y: auto;
         }
-        .nav-link:hover {
-            color: #3498db !important;
+        
+        .sidebar.open {
+            left: 0;
         }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1010;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .sidebar-menu .menu-item {
+            display: block;
+            padding: 12px 20px;
+            color: #bdc3c7;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu .menu-item:hover {
+            background: #34495e;
+            color: white;
+            border-left-color: var(--primary-color);
+        }
+        
+        .sidebar-menu .menu-item.active {
+            background: #34495e;
+            color: white;
+            border-left-color: var(--primary-color);
+        }
+        
+        .sidebar-menu .menu-item i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
         .card {
             border: none;
             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            border-radius: 10px;
+            margin-bottom: 1rem;
         }
+        
         .card:hover {
             transform: translateY(-2px);
         }
+        
         .btn-primary {
             background: linear-gradient(135deg, #3498db, #2980b9);
             border: none;
+            border-radius: 8px;
         }
+        
         .btn-primary:hover {
             background: linear-gradient(135deg, #2980b9, #3498db);
         }
+        
         .alert {
             border: none;
             border-radius: 10px;
         }
+        
         .severity-high { border-left: 5px solid #e74c3c; }
         .severity-medium { border-left: 5px solid #f39c12; }
         .severity-low { border-left: 5px solid #27ae60; }
+        
         .footer {
             background: #2c3e50;
             color: white;
-            padding: 2rem 0;
-            margin-top: 3rem;
-        }
-        .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
         }
         
+        /* Desktop sidebar */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+            
+            .sidebar-overlay {
+                display: none;
+            }
+        }
         
-        /* Mobile Responsive Design */
-        @media (max-width: 768px) {
-            .nosdra-header {
-                padding: 0.5rem 0;
-            }
-            
-            .nosdra-header .row {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .nosdra-header .col-md-4 {
-                margin-top: 1rem;
-            }
-            
-            .nosdra-logo {
-                width: 50px;
-                height: 50px;
-                margin: 0 auto 10px auto;
-            }
-            
+        /* Tablet responsive */
+        @media (min-width: 768px) and (max-width: 991px) {
             .nosdra-header h2 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             
             .nosdra-header small {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .nosdra-header {
+                padding: 0.5rem 0;
+                height: 60px;
             }
             
-            .navbar-nav {
-                flex-direction: row;
-                justify-content: center;
-                gap: 10px;
+            .main-content {
+                margin-top: 60px;
+                padding: 15px;
             }
             
-            .nav-link {
-                padding: 0.25rem 0.5rem;
+            .sidebar {
+                top: 60px;
+                height: calc(100vh - 60px);
+            }
+            
+            .nosdra-logo {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+            
+            .nosdra-header h2 {
                 font-size: 0.9rem;
+                margin-bottom: 0;
             }
             
-            .card {
-                margin-bottom: 1rem;
+            .nosdra-header small {
+                font-size: 0.65rem;
             }
             
             .card-body {
                 padding: 1rem;
             }
             
-            main.container-fluid {
-                padding: 1rem;
-            }
-            
             .table-responsive {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
             
             .btn {
                 padding: 0.375rem 0.75rem;
-                font-size: 0.875rem;
+                font-size: 0.85rem;
             }
             
             .stats-card h3 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
             
-            .footer {
-                padding: 1rem 0;
-                font-size: 0.9rem;
+            .stats-card p {
+                font-size: 0.85rem;
             }
         }
         
+        /* Extra small mobile */
         @media (max-width: 576px) {
+            .main-content {
+                padding: 10px;
+            }
+            
             .nosdra-header h2 {
-                font-size: 1rem;
-            }
-            
-            .nosdra-header small {
-                font-size: 0.7rem;
-            }
-            
-            .nav-link {
                 font-size: 0.8rem;
             }
             
-            .nav-link i {
+            .nosdra-header small {
                 display: none;
-            }
-            
-            main.container-fluid {
-                padding: 0.5rem;
             }
             
             .card-header h3,
             .card-header h4,
             .card-header h5 {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             
             .btn-sm {
                 padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
-            }
-        }
-        
-        /* Desktop enhancements */
-        @media (min-width: 1200px) {
-            .nosdra-logo {
-                width: 70px;
-                height: 70px;
+                font-size: 0.7rem;
             }
             
-            .nosdra-header h2 {
-                font-size: 1.5rem;
+            .table td, .table th {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="nosdra-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8 col-12">
-                    <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                        <div class="nosdra-logo">
-                            <img src="{{ url_for('static', filename='nosdra_logo.jpg') }}" alt="NOSDRA Logo">
-                        </div>
-                        <div class="text-center text-md-start">
-                            <h2 class="mb-0">NOSDRA LZO ICT GIS Unit</h2>
-                            <small>National Oil Spills Detection and Response Agency</small>
-                        </div>
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="menu-toggle me-3" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="nosdra-logo">
+                        <img src="{{ url_for('static', filename='nosdra_logo.jpg') }}" alt="NOSDRA Logo">
+                    </div>
+                    <div>
+                        <h2 class="mb-0">NOSDRA LZO ICT GIS Unit</h2>
+                        <small>National Oil Spills Detection and Response Agency</small>
                     </div>
                 </div>
-                <div class="col-md-4 col-12">
-                    <nav class="navbar navbar-expand">
-                        <ul class="navbar-nav mx-auto mx-md-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('index') }}">
-                                    <i class="fas fa-home"></i> <span class="d-none d-sm-inline">Dashboard</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('add_incident') }}">
-                                    <i class="fas fa-plus-circle"></i> <span class="d-none d-sm-inline">Report</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('reports') }}">
-                                    <i class="fas fa-chart-bar"></i> <span class="d-none d-sm-inline">Reports</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                <div class="d-none d-md-block">
+                    <span class="text-light"><i class="fas fa-clock"></i> {{ moment().format('MMMM Do YYYY, h:mm a') }}</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="container-fluid py-4">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-menu">
+            <a href="{{ url_for('index') }}" class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{{ url_for('add_incident') }}" class="menu-item {% if request.endpoint == 'add_incident' %}active{% endif %}">
+                <i class="fas fa-plus-circle"></i> Report Incident
+            </a>
+            <a href="{{ url_for('reports') }}" class="menu-item {% if request.endpoint == 'reports' %}active{% endif %}">
+                <i class="fas fa-chart-bar"></i> Analytics & Reports
+            </a>
+            
+            <hr style="border-color: #34495e; margin: 1rem 0;">
+            
+            <div class="menu-section">
+                <div class="px-3 py-2">
+                    <small class="text-muted text-uppercase fw-bold">Quick Stats</small>
+                </div>
+                <div class="px-3 py-2">
+                    <small class="text-light">
+                        <i class="fas fa-exclamation-triangle text-warning"></i> 
+                        Total Incidents: <span class="fw-bold">{{ (load_incidents() or [])|length }}</span>
+                    </small>
+                </div>
+                <div class="px-3 py-2">
+                    <small class="text-light">
+                        <i class="fas fa-calendar text-info"></i> 
+                        Last Updated: <span class="fw-bold">{{ moment().format('MMM DD') }}</span>
+                    </small>
+                </div>
+            </div>
+            
+            <hr style="border-color: #34495e; margin: 1rem 0;">
+            
+            <div class="menu-section">
+                <div class="px-3 py-2">
+                    <small class="text-muted text-uppercase fw-bold">System Info</small>
+                </div>
+                <div class="px-3 py-2">
+                    <small class="text-light">
+                        <i class="fas fa-server text-success"></i> 
+                        System Status: <span class="text-success fw-bold">Online</span>
+                    </small>
+                </div>
+                <div class="px-3 py-2">
+                    <small class="text-light">
+                        <i class="fas fa-shield-alt text-primary"></i> 
+                        Version: <span class="fw-bold">v1.0</span>
+                    </small>
+                </div>
+            </div>
+            
+            <hr style="border-color: #34495e; margin: 1rem 0;">
+            
+            <a href="#" class="menu-item" onclick="showAbout()">
+                <i class="fas fa-info-circle"></i> About NOSDRA
+            </a>
+            <a href="#" class="menu-item" onclick="showContact()">
+                <i class="fas fa-phone"></i> Contact
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -275,6 +408,63 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        
+        function showAbout() {
+            alert('NOSDRA (National Oil Spills Detection and Response Agency) is the federal agency responsible for coordinating oil spill preparedness and response in Nigeria.');
+        }
+        
+        function showContact() {
+            alert('Contact NOSDRA:\nPhone: +234-1-XXXXXXX\nEmail: info@nosdra.gov.ng\nWebsite: www.nosdra.gov.ng');
+        }
+        
+        // Auto-close sidebar on large screens
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 992) {
+                closeSidebar();
+            }
+        });
+        
+        // Update time display
+        function updateTime() {
+            const timeElements = document.querySelectorAll('.current-time');
+            timeElements.forEach(el => {
+                el.textContent = moment().format('MMMM Do YYYY, h:mm a');
+            });
+        }
+        
+        setInterval(updateTime, 60000); // Update every minute
+        
+        // Close sidebar when clicking on main content on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth < 992 && 
+                !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target) && 
+                sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
