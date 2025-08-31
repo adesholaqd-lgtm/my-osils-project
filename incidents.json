@@ -60,5 +60,36 @@
     "company_responsible": "",
     "additional_notes": "",
     "timestamp": "2025-08-26 20:20:39"
+  },
+  {
+    "id": 3,
+    "date_reported": "2025-04-24",
+    "time_reported": "22:41",
+    "location": "Exxon Mobil, Apapa, Lagos",
+    "state": "Lagos",
+    "lga": "Satellite ",
+    "coordinates": {
+      "latitude": "20,45.33.05",
+      "longitude": "25.27.36.21"
+    },
+    "incident_type": "Tank/Storage Leak",
+    "source": "Swamp",
+    "cause": "Sabotage/Vandalism",
+    "oil_type": "Crude Oil",
+    "estimated_volume": "4500000",
+    "severity": "High",
+    "weather_conditions": "Winter",
+    "water_body_affected": "Surface",
+    "land_area_affected": "20",
+    "population_affected": "20000",
+    "environmental_impact": "Degredation",
+    "response_actions": "Clean Up",
+    "response_team": "OSRT",
+    "cleanup_status": "Completed",
+    "reported_by": "Oluwaseun",
+    "contact_info": "24, Old Ojo road Alaba Lagos",
+    "company_responsible": "Exxon Mobil",
+    "additional_notes": "",
+    "timestamp": "2025-08-30 21:50:15"
   }
 ]
