@@ -94,6 +94,143 @@ def view_incident(incident_id):
 def api_incidents():
     return jsonify(load_incidents())
 
+@app.route('/download_project')
+def download_project():
+    """Generate and download the entire project as a zip file"""
+    import zipfile
+    import tempfile
+    from flask import send_file
+    
+    # Create a temporary zip file
+    temp_dir = tempfile.mkdtemp()
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    zip_filename = f"nosdra_oil_spill_system_{timestamp}.zip"
+    zip_path = os.path.join(temp_dir, zip_filename)
+    
+    # Files and directories to include
+    files_to_include = [
+        'main.py',
+        'incidents.json',
+        'pyproject.toml',
+        '.replit',
+        'poetry.lock',
+        '.gitignore'
+    ]
+    
+    directories_to_include = [
+        'templates',
+        'static'
+    ]
+    
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        # Add individual files
+        for file_path in files_to_include:
+            if os.path.exists(file_path):
+                zipf.write(file_path)
+        
+        # Add directories and their contents
+        for directory in directories_to_include:
+            if os.path.exists(directory):
+                for root, dirs, files in os.walk(directory):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        zipf.write(file_path)
+        
+        # Add README file
+        readme_content = f"""# NOSDRA Oil Spill Incident Logging System
+
+## Overview
+This is a Flask-based web application for the National Oil Spills Detection and Response Agency (NOSDRA) to log, track, and manage oil spill incidents in Nigeria.
+
+## Features
+- Incident reporting and logging
+- Dashboard with statistics
+- Analytics and reports
+- Mobile-friendly responsive design
+- Real-time incident tracking
+
+## Installation & Setup
+
+1. Install Python 3.11 or higher
+2. Install dependencies:
+   ```bash
+   pip install flask gunicorn
+   ```
+
+3. Run the application:
+   ```bash
+   python main.py
+   ```
+
+4. Access the application at: http://localhost:5000
+
+## Project Structure
+- `main.py` - Main Flask application
+- `incidents.json` - Data storage for incidents
+- `templates/` - HTML templates
+- `static/` - Static files (CSS, images, etc.)
+
+## Usage
+1. Access the dashboard to view incident statistics
+2. Use "Report Incident" to log new oil spill incidents
+3. View detailed analytics and reports
+4. Track incident status and response actions
+
+## Contact
+NOSDRA LZO ICT GIS Unit
+National Oil Spills Detection and Response Agency
+Nigeria
+
+Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+"""
+        zipf.writestr('README.md', readme_content)
+        
+        # Add installation scripts
+        install_script = """#!/bin/bash
+# NOSDRA Oil Spill System Installation Script
+
+echo "Setting up NOSDRA Oil Spill Incident Logging System..."
+
+# Check if Python is installed
+if ! command -v python3 &> /dev/null; then
+    echo "Python 3 is required but not installed. Please install Python 3.11 or higher."
+    exit 1
+fi
+
+# Install required packages
+echo "Installing required Python packages..."
+pip3 install flask gunicorn
+
+echo "Installation complete!"
+echo "To run the application, execute: python3 main.py"
+echo "Then open your browser to http://localhost:5000"
+"""
+        zipf.writestr('install.sh', install_script)
+        
+        windows_script = """@echo off
+echo Setting up NOSDRA Oil Spill Incident Logging System...
+
+REM Check if Python is installed
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo Python is required but not installed. Please install Python 3.11 or higher.
+    pause
+    exit /b 1
+)
+
+REM Install required packages
+echo Installing required Python packages...
+pip install flask gunicorn
+
+echo Installation complete!
+echo To run the application, execute: python main.py
+echo Then open your browser to http://localhost:5000
+pause
+"""
+        zipf.writestr('install.bat', windows_script)
+    
+    return send_file(zip_path, as_attachment=True, download_name=zip_filename)
+
 @app.route('/reports')
 def reports():
     incidents = load_incidents()
